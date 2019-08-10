@@ -14,9 +14,25 @@ class Login extends Component {
         event.preventDefault();
         const form = this.props.form;
         const values = form.getFieldsValue();
-        console.log("handleSubmit()", values);
+        console.log("handleSubmit()", values);    
+    }
+
+    vadidatePwd = (rule, value, callback) => {
+        console.log('validatePwd()', rule, value);
+        if(!value) {
+            callback('Please input the password!');
+        } else if (value.length < 4) {
+            callback('Password must be longer than 4 characters!');
+        } else if (value.length > 12) {
+            callback('Password must be shorter than 12 characters!');
+        } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+            callback('Username must be alpanumeric!');
+        } else {
+            callback();
+        }
         
     }
+
     render() {
 
         const form = this.props.form;
@@ -33,7 +49,11 @@ class Login extends Component {
                     <Form onSubmit={this.handleSubmit} className="login-form">
                         <Form.Item>
                             {getFieldDecorator('username', {
-                                rules: [{ required: true, message: 'Please input your username!' }],
+                                rules: [{ required: true, whitespace:true, message: 'Please input your username!' },
+                                        { min: 4, message: 'username cannot be shorter than 4 characters!' },
+                                        { max: 12, message: 'Username cannot be longer than 12 characters!' },
+                                        { pattern: /^[a-zA-Z0-9_]+$/, message: 'Username must be alpanumeric!' },
+                                    ],    
                                 })(
                                 <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                 placeholder="Username"
@@ -42,7 +62,11 @@ class Login extends Component {
                         </Form.Item>
                         <Form.Item>
                             {getFieldDecorator('password', {
-                                    rules: [{ required: true, message: 'Please input your username!' }],
+                                    rules: [
+                                        { 
+                                            validator: this.vadidatePwd
+                                        }
+                                    ],
                                     })(
                                     <Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                     type="password"
