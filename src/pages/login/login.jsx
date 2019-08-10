@@ -12,10 +12,14 @@ class Login extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        const form = this.props.form;
-        const values = form.getFieldsValue();
-        console.log("handleSubmit()", values);    
-    }
+        this.props.form.validateFields((err, values) => {
+          if (!err) {
+            console.log('Received values of form: ', values);
+          } else {
+            console.log('Error');
+          }
+        });
+      };
 
     vadidatePwd = (rule, value, callback) => {
         console.log('validatePwd()', rule, value);
@@ -53,7 +57,8 @@ class Login extends Component {
                                         { min: 4, message: 'username cannot be shorter than 4 characters!' },
                                         { max: 12, message: 'Username cannot be longer than 12 characters!' },
                                         { pattern: /^[a-zA-Z0-9_]+$/, message: 'Username must be alpanumeric!' },
-                                    ],    
+                                    ], 
+                                initialValue: 'admin'
                                 })(
                                 <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
                                 placeholder="Username"
