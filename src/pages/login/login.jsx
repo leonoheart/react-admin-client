@@ -3,7 +3,7 @@ import {Form, Icon, Input, Button} from 'antd';
 
 import './login.less'
 import logo from './images/logo.png'
-
+import {reqLogin} from '../../api'
 /* 
 login router component
 */
@@ -13,11 +13,16 @@ class Login extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.props.form.validateFields((err, values) => {
-          if (!err) {
-            console.log('Received values of form: ', values);
-          } else {
-            console.log('Error');
-          }
+            if (!err) {
+                const {username, password} = values
+                reqLogin(username, password).then(response => {
+                    console.log('request succeeds', response.data)
+                }).catch(error => {
+                    console.log('request fails', error)
+                }) 
+            } else {
+                console.log('Error');
+            }
         });
       };
 
