@@ -1,9 +1,13 @@
 import React, {Component} from 'react'
-import {Form, Icon, Input, Button} from 'antd';
+import {Form, Icon, Input, Button, message} from 'antd'
+import {Redirect} from 'react-router-dom'
 
 import './login.less'
 import logo from './images/logo.png'
 import {reqLogin} from '../../api'
+import memoryUtils from '../../utils/memoryUtils'
+import storageUtils from '../../utils/storageUtils'
+
 /* 
 login router component
 */
@@ -12,19 +16,27 @@ class Login extends Component {
 
     handleSubmit = (event) => {
         event.preventDefault();
-        this.props.form.validateFields((err, values) => {
+        this.props.form.validateFields(async (err, values) => {
             if (!err) {
                 const {username, password} = values
-                reqLogin(username, password).then(response => {
-                    console.log('request succeeds', response.data)
-                }).catch(error => {
-                    console.log('request fails', error)
-                }) 
-            } else {
-                console.log('Error');
+                const result = await reqLogin(username, password)
+                // console.log('request suceeds', response.data) 
+                if(result.status === 0) {
+                    message.success('login sucess')
+                    const user = result.data
+                    memoryUtils.user = user
+                    storageUtils.saveUser(user)
+                    
+                    this.props.history.replace('/')
+                } else {
+                    message.error(result.msg)
+                }
+            } 
+            else {
+                console.log('fails')
             }
         });
-      };
+      }
 
     vadidatePwd = (rule, value, callback) => {
         console.log('validatePwd()', rule, value);
@@ -43,6 +55,11 @@ class Login extends Component {
     }
 
     render() {
+
+        const user = memoryUtils.user
+        if(user && user._id) {
+            return <Redirect to='/'></Redirect>
+        }
 
         const form = this.props.form;
         const {getFieldDecorator} = form;
