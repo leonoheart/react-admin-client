@@ -24,8 +24,8 @@ export default class Admin extends Component {
                 </Sider>
                 <Layout>
                     <Header>Header</Header>
-                    <Content>Content</Content>
-                    <Footer>Footer</Footer>
+                    <Content style={{backgroundColor: '#fff'}}>Content</Content>
+                    <Footer style={{textAlign: 'center', color: '#ccc'}}>welcome to the site</Footer>
                 </Layout>
             </Layout>
         )
