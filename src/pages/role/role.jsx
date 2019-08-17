@@ -1,10 +1,10 @@
-import React, {Component} from 'React'
+import React, {Component} from 'react'
 
 export default class Role extends Component {
     render() {
         return (
             <div>
-                Category
+                Role
             </div>
         )
     }
